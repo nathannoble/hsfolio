@@ -1,0 +1,390 @@
+type School {
+  id: ID!
+  name: String!
+  schoolYears(filter: ModelSchoolYearFilterInput, sortDirection: ModelSortDirection, limit: Int, nextToken: String): ModelSchoolYearConnection
+}
+
+type SchoolYear {
+  id: ID!
+  name: String!
+  school: School
+  students(filter: ModelStudentFilterInput, sortDirection: ModelSortDirection, limit: Int, nextToken: String): ModelStudentConnection
+}
+
+type Student {
+  id: ID!
+  name: String!
+  schoolYear: Student
+  subjects(filter: ModelSubjectFilterInput, sortDirection: ModelSortDirection, limit: Int, nextToken: String): ModelSubjectConnection
+}
+
+type Subject {
+  id: ID!
+  name: String!
+  level: String!
+  student: Student
+  tasks(filter: ModelTaskFilterInput, sortDirection: ModelSortDirection, limit: Int, nextToken: String): ModelTaskConnection
+  grade: Float
+}
+
+type Task {
+  id: ID!
+  title: String!
+  description: String
+  status: String
+  subject: Subject
+  taskWork: TaskWork
+}
+
+type TaskWork {
+  id: ID!
+  task: Task
+  comment: String
+  attachments: [String]
+}
+
+type PrivateNote {
+  id: ID!
+  content: String!
+}
+
+enum ModelSortDirection {
+  ASC
+  DESC
+}
+
+type ModelSchoolConnection {
+  items: [School]
+  nextToken: String
+}
+
+input ModelStringFilterInput {
+  ne: String
+  eq: String
+  le: String
+  lt: String
+  ge: String
+  gt: String
+  contains: String
+  notContains: String
+  between: [String]
+  beginsWith: String
+}
+
+input ModelIDFilterInput {
+  ne: ID
+  eq: ID
+  le: ID
+  lt: ID
+  ge: ID
+  gt: ID
+  contains: ID
+  notContains: ID
+  between: [ID]
+  beginsWith: ID
+}
+
+input ModelIntFilterInput {
+  ne: Int
+  eq: Int
+  le: Int
+  lt: Int
+  ge: Int
+  gt: Int
+  contains: Int
+  notContains: Int
+  between: [Int]
+}
+
+input ModelFloatFilterInput {
+  ne: Float
+  eq: Float
+  le: Float
+  lt: Float
+  ge: Float
+  gt: Float
+  contains: Float
+  notContains: Float
+  between: [Float]
+}
+
+input ModelBooleanFilterInput {
+  ne: Boolean
+  eq: Boolean
+}
+
+input ModelSchoolFilterInput {
+  id: ModelIDFilterInput
+  name: ModelStringFilterInput
+  and: [ModelSchoolFilterInput]
+  or: [ModelSchoolFilterInput]
+  not: ModelSchoolFilterInput
+}
+
+type Query {
+  getSchool(id: ID!): School
+  listSchools(filter: ModelSchoolFilterInput, limit: Int, nextToken: String): ModelSchoolConnection
+  getSchoolYear(id: ID!): SchoolYear
+  listSchoolYears(filter: ModelSchoolYearFilterInput, limit: Int, nextToken: String): ModelSchoolYearConnection
+  getStudent(id: ID!): Student
+  listStudents(filter: ModelStudentFilterInput, limit: Int, nextToken: String): ModelStudentConnection
+  getSubject(id: ID!): Subject
+  listSubjects(filter: ModelSubjectFilterInput, limit: Int, nextToken: String): ModelSubjectConnection
+  getTask(id: ID!): Task
+  listTasks(filter: ModelTaskFilterInput, limit: Int, nextToken: String): ModelTaskConnection
+  getTaskWork(id: ID!): TaskWork
+  listTaskWorks(filter: ModelTaskWorkFilterInput, limit: Int, nextToken: String): ModelTaskWorkConnection
+  getPrivateNote(id: ID!): PrivateNote
+  listPrivateNotes(filter: ModelPrivateNoteFilterInput, limit: Int, nextToken: String): ModelPrivateNoteConnection
+}
+
+input CreateSchoolInput {
+  id: ID
+  name: String!
+}
+
+input UpdateSchoolInput {
+  id: ID!
+  name: String
+}
+
+input DeleteSchoolInput {
+  id: ID
+}
+
+type Mutation {
+  createSchool(input: CreateSchoolInput!): School
+  updateSchool(input: UpdateSchoolInput!): School
+  deleteSchool(input: DeleteSchoolInput!): School
+  createSchoolYear(input: CreateSchoolYearInput!): SchoolYear
+  updateSchoolYear(input: UpdateSchoolYearInput!): SchoolYear
+  deleteSchoolYear(input: DeleteSchoolYearInput!): SchoolYear
+  createStudent(input: CreateStudentInput!): Student
+  updateStudent(input: UpdateStudentInput!): Student
+  deleteStudent(input: DeleteStudentInput!): Student
+  createSubject(input: CreateSubjectInput!): Subject
+  updateSubject(input: UpdateSubjectInput!): Subject
+  deleteSubject(input: DeleteSubjectInput!): Subject
+  createTask(input: CreateTaskInput!): Task
+  updateTask(input: UpdateTaskInput!): Task
+  deleteTask(input: DeleteTaskInput!): Task
+  createTaskWork(input: CreateTaskWorkInput!): TaskWork
+  updateTaskWork(input: UpdateTaskWorkInput!): TaskWork
+  deleteTaskWork(input: DeleteTaskWorkInput!): TaskWork
+  createPrivateNote(input: CreatePrivateNoteInput!): PrivateNote
+  updatePrivateNote(input: UpdatePrivateNoteInput!): PrivateNote
+  deletePrivateNote(input: DeletePrivateNoteInput!): PrivateNote
+}
+
+type Subscription {
+  onCreateSchool: School @aws_subscribe(mutations: ["createSchool"])
+  onUpdateSchool: School @aws_subscribe(mutations: ["updateSchool"])
+  onDeleteSchool: School @aws_subscribe(mutations: ["deleteSchool"])
+  onCreateSchoolYear: SchoolYear @aws_subscribe(mutations: ["createSchoolYear"])
+  onUpdateSchoolYear: SchoolYear @aws_subscribe(mutations: ["updateSchoolYear"])
+  onDeleteSchoolYear: SchoolYear @aws_subscribe(mutations: ["deleteSchoolYear"])
+  onCreateStudent: Student @aws_subscribe(mutations: ["createStudent"])
+  onUpdateStudent: Student @aws_subscribe(mutations: ["updateStudent"])
+  onDeleteStudent: Student @aws_subscribe(mutations: ["deleteStudent"])
+  onCreateSubject: Subject @aws_subscribe(mutations: ["createSubject"])
+  onUpdateSubject: Subject @aws_subscribe(mutations: ["updateSubject"])
+  onDeleteSubject: Subject @aws_subscribe(mutations: ["deleteSubject"])
+  onCreateTask: Task @aws_subscribe(mutations: ["createTask"])
+  onUpdateTask: Task @aws_subscribe(mutations: ["updateTask"])
+  onDeleteTask: Task @aws_subscribe(mutations: ["deleteTask"])
+  onCreateTaskWork: TaskWork @aws_subscribe(mutations: ["createTaskWork"])
+  onUpdateTaskWork: TaskWork @aws_subscribe(mutations: ["updateTaskWork"])
+  onDeleteTaskWork: TaskWork @aws_subscribe(mutations: ["deleteTaskWork"])
+  onCreatePrivateNote: PrivateNote @aws_subscribe(mutations: ["createPrivateNote"])
+  onUpdatePrivateNote: PrivateNote @aws_subscribe(mutations: ["updatePrivateNote"])
+  onDeletePrivateNote: PrivateNote @aws_subscribe(mutations: ["deletePrivateNote"])
+}
+
+type ModelSchoolYearConnection {
+  items: [SchoolYear]
+  nextToken: String
+}
+
+input ModelSchoolYearFilterInput {
+  id: ModelIDFilterInput
+  name: ModelStringFilterInput
+  and: [ModelSchoolYearFilterInput]
+  or: [ModelSchoolYearFilterInput]
+  not: ModelSchoolYearFilterInput
+}
+
+input CreateSchoolYearInput {
+  id: ID
+  name: String!
+  schoolYearSchoolId: ID
+}
+
+input UpdateSchoolYearInput {
+  id: ID!
+  name: String
+  schoolYearSchoolId: ID
+}
+
+input DeleteSchoolYearInput {
+  id: ID
+}
+
+type ModelStudentConnection {
+  items: [Student]
+  nextToken: String
+}
+
+input ModelStudentFilterInput {
+  id: ModelIDFilterInput
+  name: ModelStringFilterInput
+  and: [ModelStudentFilterInput]
+  or: [ModelStudentFilterInput]
+  not: ModelStudentFilterInput
+}
+
+input CreateStudentInput {
+  id: ID
+  name: String!
+  studentSchoolYearId: ID
+}
+
+input UpdateStudentInput {
+  id: ID!
+  name: String
+  studentSchoolYearId: ID
+}
+
+input DeleteStudentInput {
+  id: ID
+}
+
+type ModelSubjectConnection {
+  items: [Subject]
+  nextToken: String
+}
+
+input ModelSubjectFilterInput {
+  id: ModelIDFilterInput
+  name: ModelStringFilterInput
+  level: ModelStringFilterInput
+  grade: ModelFloatFilterInput
+  and: [ModelSubjectFilterInput]
+  or: [ModelSubjectFilterInput]
+  not: ModelSubjectFilterInput
+}
+
+input CreateSubjectInput {
+  id: ID
+  name: String!
+  level: String!
+  grade: Float
+  subjectStudentId: ID
+}
+
+input UpdateSubjectInput {
+  id: ID!
+  name: String
+  level: String
+  grade: Float
+  subjectStudentId: ID
+}
+
+input DeleteSubjectInput {
+  id: ID
+}
+
+type ModelTaskConnection {
+  items: [Task]
+  nextToken: String
+}
+
+input ModelTaskFilterInput {
+  id: ModelIDFilterInput
+  title: ModelStringFilterInput
+  description: ModelStringFilterInput
+  status: ModelStringFilterInput
+  and: [ModelTaskFilterInput]
+  or: [ModelTaskFilterInput]
+  not: ModelTaskFilterInput
+}
+
+input CreateTaskInput {
+  id: ID
+  title: String!
+  description: String
+  status: String
+  taskSubjectId: ID
+  taskTaskWorkId: ID
+}
+
+input UpdateTaskInput {
+  id: ID!
+  title: String
+  description: String
+  status: String
+  taskSubjectId: ID
+  taskTaskWorkId: ID
+}
+
+input DeleteTaskInput {
+  id: ID
+}
+
+type ModelTaskWorkConnection {
+  items: [TaskWork]
+  nextToken: String
+}
+
+input ModelTaskWorkFilterInput {
+  id: ModelIDFilterInput
+  comment: ModelStringFilterInput
+  attachments: ModelStringFilterInput
+  and: [ModelTaskWorkFilterInput]
+  or: [ModelTaskWorkFilterInput]
+  not: ModelTaskWorkFilterInput
+}
+
+input CreateTaskWorkInput {
+  id: ID
+  comment: String
+  attachments: [String]
+  taskWorkTaskId: ID
+}
+
+input UpdateTaskWorkInput {
+  id: ID!
+  comment: String
+  attachments: [String]
+  taskWorkTaskId: ID
+}
+
+input DeleteTaskWorkInput {
+  id: ID
+}
+
+type ModelPrivateNoteConnection {
+  items: [PrivateNote]
+  nextToken: String
+}
+
+input ModelPrivateNoteFilterInput {
+  id: ModelIDFilterInput
+  content: ModelStringFilterInput
+  and: [ModelPrivateNoteFilterInput]
+  or: [ModelPrivateNoteFilterInput]
+  not: ModelPrivateNoteFilterInput
+}
+
+input CreatePrivateNoteInput {
+  id: ID
+  content: String!
+}
+
+input UpdatePrivateNoteInput {
+  id: ID!
+  content: String
+}
+
+input DeletePrivateNoteInput {
+  id: ID
+}

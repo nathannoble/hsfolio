@@ -1,0 +1,71 @@
+type School @model 
+  @auth(rules: [{allow: owner}])
+{
+  id: ID!
+  name: String!
+  schoolYears: [SchoolYear] @connection(name: "SchoolYears")
+}
+
+type SchoolYear @model 
+  @auth(rules: [{allow: owner}])
+{
+  id: ID!
+  name: String!
+  school: School @connection(name: "SchoolYears"),
+  students: [Student] @connection(name: "Students")
+}
+
+type Student @model 
+  @auth(rules: [{allow: owner}])
+{
+  id: ID!
+  name: String!
+  schoolYear: Student @connection(name: "Students")
+  subjects: [Subject] @connection(name: "Subjects")
+}
+
+type Subject @model 
+  @auth(rules: [{allow: owner}])
+{
+  id: ID!
+  name: String!,
+  level: String!,
+  student: Student @connection(name: "Subjects")
+  tasks: [Task] @connection(name: "SubjectTasks")
+  grade: Float
+}
+
+type Task @model 
+  @auth(rules: [
+      {allow: groups, groups: ["Teachers"], queries: null, mutations: [create, update, delete]},
+      {allow: groups, groups: ["Students"], queries: [get, list], mutations: null}
+    ])
+{
+  id: ID!
+  title: String!
+  description: String
+  status: String,
+  subject: Subject @connection(name: "SubjectTasks")
+  taskWork: TaskWork @connection(name: "TaskWork")
+}
+
+type TaskWork @model
+  @auth(
+    rules: [
+      {allow: groups, groups: ["Students"], queries: null, mutations: [create, update, delete]},
+      {allow: groups, groups: ["Teachers"], queries:[get, list], mutations:null },
+    ]
+  )
+{
+  id:ID!
+  task: Task @connection(name: "TaskWork")
+  comment: String,
+  attachments: [String]
+}
+
+type PrivateNote @model
+  @auth(rules: [{allow: owner}])
+{
+  id: ID!
+  content: String!
+}

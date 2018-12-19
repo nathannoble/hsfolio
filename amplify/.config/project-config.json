@@ -1,0 +1,20 @@
+{
+    "projectName": "hsfolio",
+    "projectPath": "C:\\Users\\tray\\source\\hsfolio",
+    "defaultEditor": "code",
+    "frontendHandler": {
+        "javascript": "C:\\Users\\tray\\AppData\\Roaming\\npm\\node_modules\\@aws-amplify\\cli\\node_modules\\amplify-frontend-javascript"
+    },
+    "javascript": {
+        "framework": "react",
+        "config": {
+            "SourceDir": "src",
+            "DistributionDir": "build",
+            "BuildCommand": "npm run-script build",
+            "StartCommand": "npm run-script start"
+        }
+    },
+    "providers": {
+        "awscloudformation": "C:\\Users\\tray\\AppData\\Roaming\\npm\\node_modules\\@aws-amplify\\cli\\node_modules\\amplify-provider-awscloudformation"
+    }
+}
