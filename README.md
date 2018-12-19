@@ -1,3 +1,13 @@
+# Installation Notes
+
+## Dependencies
+- npm install @material-ui/core
+- npm install --save react-router-dom
+- npm install --save-dev redux
+- npm install --save-dev react-redux
+- npm install @material-ui/icons
+
+
 This project was bootstrapped with [Create React App](https://github.com/facebook/create-react-app).
 
 ## Available Scripts
