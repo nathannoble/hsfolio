@@ -1,8 +1,7 @@
 import React, { Component } from 'react';
-import Button from '@material-ui/core/Button';
 import 'bootstrap/dist/css/bootstrap.min.css';
+import { connect } from 'react-redux';
 import Amplify, { API, graphqlOperation } from 'aws-amplify';
-import { withAuthenticator } from 'aws-amplify-react';
 import aws_exports from '../aws-exports'; 
 
 import * as mutations from '../graphql/mutations'
@@ -31,7 +30,8 @@ class Main extends Component {
 
   async componentDidMount() {
     const schools = await API.graphql(graphqlOperation(this.queries.listSchools));
-    this.setState({ schools: schools.data.listSchools.items });
+    this.props.onInitSchoolList(schools.data.listSchools.items)
+    // this.setState({ schools: schools.data.listSchools.items });
   }
 
   handleChange(event) {
@@ -68,11 +68,12 @@ class Main extends Component {
 
   async listSchools() {
     const schools = await API.graphql(graphqlOperation(this.queries.listSchools));
-    this.setState({ schools: schools.data.listSchools.items });
+    this.props.onInitSchoolList(schools)
+    // this.setState({ schools: schools.data.listSchools.items });
   }
 
   render() {
-    const data = [].concat(this.state.schools)
+    const data = [].concat(this.props.school.schoolList)
       .map((item, i) =>
         <div key={i} className="alert alert-primary alert-dismissible show" role="alert">
           <span key={"spn_" + i} onClick={this.selectSchool.bind(this, item)}>{item.name}</span>
@@ -113,4 +114,20 @@ class Main extends Component {
     );
   }
 }
-export default Main;
+
+const mapStateToProps = state => {
+  return {
+      school: state.school
+  }
+}
+
+const mapDispatchToProps = dispatch => {
+  return {
+      onInitSchoolList: schoolList => dispatch({ type: 'INIT_SCHOOL_LIST', schoolList: schoolList }),
+  };
+};
+
+export default connect(
+  mapStateToProps,
+  mapDispatchToProps
+)(Main)
