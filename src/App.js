@@ -20,7 +20,8 @@ class App extends Component {
               <Fragment>
                 <Tabs value={location.pathname}>
                   <Tab label="My Schools" value="/" component={Link} to="/" />
-                  <Tab label={school.name} value="/schoolView" component={Link} to="/schoolView" />
+                  {school.name ? <Tab label={school.name} value="/schoolView" component={Link} to="/schoolView" /> : ''}
+
                   <Tab
                     value="/tab3"
                     label="Reports"

@@ -63,6 +63,7 @@ class Main extends Component {
   }
 
   selectSchool(school) {
+    this.props.onSetSchool({ id: school.id, name: school.name})
     this.setState({ id: school.id, value: school.name, displayAdd: false, displayUpdate: true });
   }
 
@@ -124,6 +125,7 @@ const mapStateToProps = state => {
 const mapDispatchToProps = dispatch => {
   return {
       onInitSchoolList: schoolList => dispatch({ type: 'INIT_SCHOOL_LIST', schoolList: schoolList }),
+      onSetSchool: school => dispatch({type: 'SET_SCHOOL', school: school})
   };
 };
 

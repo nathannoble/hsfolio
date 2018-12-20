@@ -7,10 +7,10 @@ const schoolInitialState = {
 const school = (state = schoolInitialState, action) => {
     switch (action.type) {
         case 'INIT_SCHOOL_LIST':
-            return { ...state, schoolList: action.schoolList, currentSchool: action.schoolList[0], isLoading: false }
+            return { ...state, schoolList: action.schoolList, isLoading: false }
 
         // Update the current school and the corresponding item
-        case 'SET_CURRENT_SCHOOL':
+        case 'SET_SCHOOL':
             return { ...state, currentSchool: action.school }
 
         default:
