@@ -16,8 +16,8 @@ ReactDOM.render(
         <BrowserRouter>
             <div>
                 <App />
-                {/* <Route exact path="/" component={Main} />
-                <Route path="/acquire" render={(props) => (<Acquire {...props} state={window.nodes} />)} />
+                {/* <Route exact path="/Main" component={Main} /> */}
+                {/* <Route path="/acquire" render={(props) => (<Acquire {...props} state={window.nodes} />)} />
                 <Route path="/explore" component={Explore} />
                 <Route path="/governNew" component={GovernNew} />
                 <Route path="/operationalize" component={Operationalize} />
