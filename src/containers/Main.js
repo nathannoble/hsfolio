@@ -19,6 +19,8 @@ import DialogContentText from '@material-ui/core/DialogContentText';
 import DialogTitle from '@material-ui/core/DialogTitle';
 import TextField from '@material-ui/core/TextField';
 
+import FormDialog from '../components/FormDialog'
+
 import * as mutations from '../graphql/mutations'
 import * as queries from '../graphql/queries'
 
@@ -63,7 +65,7 @@ class Main extends Component {
   }
 
   handleClickOpen = () => {
-    this.setState({ open: true });
+    this.setState({ open: true, value: '' });
   };
 
   handleClose = () => {
@@ -127,6 +129,28 @@ class Main extends Component {
   render() {
     const { classes } = this.props;
 
+    const newParams = {
+      title: "Add New School",
+      contentText: "Provide a name for this school that is easy to recognize",
+      textLabel: "Name of the new school",
+      value: this.state.value,
+      onChange: this.handleChange,
+      open: this.state.open,
+      onClose: this.handleClose,
+      onSubmit: this.handleSubmit
+    }
+
+    const renameParams = {
+      title: "Rename School",
+      contentText: "Provide a name for this school that is easy to recognize",
+      textLabel: "New name of the school",
+      value: this.state.value,
+      onChange: this.handleChange,
+      open: this.state.openRename,
+      onClose: this.handleCloseRename,
+      onSubmit: this.handleUpdate
+    }
+
     const data = [].concat(this.props.school.schoolList)
       .map((item, i) =>
         <Card className={classes.card} key={i}>
@@ -157,59 +181,11 @@ class Main extends Component {
       )
     return (
       <div className={classes.main}>
-
         <Button variant="outlined" color="primary" onClick={this.handleClickOpen}>
           New School
-        </Button>
-
-        <Dialog open={this.state.open} onClose={this.handleClose} aria-labelledby="form-dialog-title">
-          <DialogTitle id="form-dialog-title">Add a New School</DialogTitle>
-          <form onSubmit={this.handleSubmit}>
-            <DialogContent>
-              <DialogContentText>
-                Provide a name for this school that is easy to recognize
-            </DialogContentText>
-              <TextField
-                autoFocus
-                margin="dense"
-                id="name"
-                label="Name of the new school"
-                value={this.state.value}
-                onChange={this.handleChange}
-                fullWidth
-              />
-            </DialogContent>
-            <DialogActions>
-              <Button onClick={this.handleClose} color="primary">Cancel</Button>
-              <Button type="submit" color="primary">Add</Button>
-            </DialogActions>
-          </form>
-        </Dialog>
-
-        <Dialog open={this.state.openRename} onClose={this.handleCloseRename} aria-labelledby="form-dialog-title">
-          <DialogTitle id="form-dialog-title">Rename School</DialogTitle>
-          <form onSubmit={this.handleUpdate}>
-            <DialogContent>
-              <DialogContentText>
-                Provide a name for this school that is easy to recognize
-            </DialogContentText>
-              <TextField
-                autoFocus
-                margin="dense"
-                id="name"
-                label="New name of the school"
-                value={this.state.value}
-                onChange={this.handleChange}
-                fullWidth
-              />
-            </DialogContent>
-            <DialogActions>
-              <Button onClick={this.handleCloseRename} color="primary">Cancel</Button>
-              <Button type="submit" color="primary">Rename</Button>
-            </DialogActions>
-          </form>
-        </Dialog>
-
+        </Button>      
+        <FormDialog params={newParams}></FormDialog>
+        <FormDialog params={renameParams}></FormDialog>
         <div >
           {data}
         </div>

@@ -1,0 +1,51 @@
+import React, { Component } from 'react'
+import Button from '@material-ui/core/Button';
+import Typography from '@material-ui/core/Typography';
+import Dialog from '@material-ui/core/Dialog';
+import DialogActions from '@material-ui/core/DialogActions';
+import DialogContent from '@material-ui/core/DialogContent';
+import DialogContentText from '@material-ui/core/DialogContentText';
+import DialogTitle from '@material-ui/core/DialogTitle';
+import TextField from '@material-ui/core/TextField';
+
+class FormDialog extends Component {
+
+    constructor(props) {
+        super(props);
+    }
+ 
+
+    render() {
+
+        let params = this.props.params
+
+        return (
+            <Dialog open={params.open} aria-labelledby="form-dialog-title">
+                <DialogTitle id="form-dialog-title">{params.title}</DialogTitle>
+                <form onSubmit={params.onSubmit}>
+                    <DialogContent>
+                        <DialogContentText>
+                            {params.contentText}
+                        </DialogContentText>
+                        <TextField
+                            autoFocus
+                            margin="dense"
+                            id="name"
+                            label={params.textLabel}
+                            value={params.value}
+                            onChange={params.onChange}
+                            fullWidth
+                        />
+                    </DialogContent>
+                    <DialogActions>
+                        <Button onClick={params.onClose} color="primary">Cancel</Button>
+                        <Button type="submit" color="primary">Save</Button>
+                    </DialogActions>
+                </form>
+            </Dialog>
+        )
+    }
+
+}
+
+export default FormDialog
