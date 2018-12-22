@@ -111,7 +111,9 @@ class Main extends Component {
   }
 
   selectSchool(school) {
-    this.props.onSetSchool({ id: school.id, name: school.name })
+    // find the school by id
+    // let found = school.schoolList.find(s => s.id === school.id)
+    this.props.onSetSchool(school)
     this.setState({ id: school.id, value: school.name});
   }
 

@@ -41,8 +41,12 @@ class SchoolView extends Component {
         this.handleSubmitNewSy = this.handleSubmitNewSy.bind(this)
     }
 
-    handleClick() {
-        alert('You clicked the Chip.'); // eslint-disable-line no-alert
+    handleClick(sy) {
+        this.props.onSetSchoolYear(sy)
+    }
+
+    handleDelete(sy) {
+        this.props.onSetSchoolYear(sy)
     }
 
     handleClickNewSyDialogOpen = () => {
@@ -81,22 +85,32 @@ class SchoolView extends Component {
             onSubmit: this.handleSubmitNewSy
         }
 
+        let data = <div></div>
+        if(school.currentSchool.schoolYears){
+            data = [].concat(school.currentSchool.schoolYears.items)
+            .map((item, i) =>
+                <Chip key={i}
+                    avatar={<Avatar>SY</Avatar>}
+                    label={item.name}
+                    onClick={this.handleClick.bind(this, item)}
+                    onDelete={this.handleDelete.bind(this, item)}
+                    className={classes.chip}
+                    variant="outlined"
+                />
+            )
+        }
+
         return (
             <div className={classes.root}>
-                <div>Current School is {school.currentSchool.id}</div>
                 <Button variant="outlined" color="primary" onClick={this.handleClickNewSyDialogOpen}>
                     New School Year
                 </Button>
 
-                <Chip
-                    avatar={<Avatar>SY</Avatar>}
-                    label="2018"
-                    onClick={this.handleClick}
-                    className={classes.chip}
-                    variant="outlined"
-                />
-
+                <div>{data}</div>
+                
                 <FormDialog params={newSyParams}></FormDialog>
+
+                <div>{school.currentSchoolYear.name}</div>
             </div>
         )
     }
@@ -115,8 +129,7 @@ const mapStateToProps = state => {
 
 const mapDispatchToProps = dispatch => {
     return {
-        //   onInitSchoolList: schoolList => dispatch({ type: 'INIT_SCHOOL_LIST', schoolList: schoolList }),
-        //   onSetSchool: school => dispatch({ type: 'SET_SCHOOL', school: school })
+        onSetSchoolYear: schoolYear => dispatch({ type: 'SET_SCHOOL_YEAR', schoolYear: schoolYear })
     };
 };
 
