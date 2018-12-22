@@ -757,7 +757,7 @@
                 },
                 "GlobalSecondaryIndexes": [
                     {
-                        "IndexName": "gsi-SchoolYears",
+                        "IndexName": "gsi-SchoolSchoolYears",
                         "KeySchema": [
                             {
                                 "AttributeName": "schoolYearSchoolId",
@@ -1364,6 +1364,10 @@
                     {
                         "AttributeName": "id",
                         "AttributeType": "S"
+                    },
+                    {
+                        "AttributeName": "studentSchoolYearId",
+                        "AttributeType": "S"
                     }
                 ],
                 "ProvisionedThroughput": {
@@ -1376,7 +1380,29 @@
                 },
                 "StreamSpecification": {
                     "StreamViewType": "NEW_AND_OLD_IMAGES"
-                }
+                },
+                "GlobalSecondaryIndexes": [
+                    {
+                        "IndexName": "gsi-SchoolYearStudents",
+                        "KeySchema": [
+                            {
+                                "AttributeName": "studentSchoolYearId",
+                                "KeyType": "HASH"
+                            }
+                        ],
+                        "Projection": {
+                            "ProjectionType": "ALL"
+                        },
+                        "ProvisionedThroughput": {
+                            "ReadCapacityUnits": {
+                                "Ref": "DynamoDBModelTableReadIOPS"
+                            },
+                            "WriteCapacityUnits": {
+                                "Ref": "DynamoDBModelTableWriteIOPS"
+                            }
+                        }
+                    }
+                ]
             }
         },
         "StudentIAMRole": {
@@ -1983,7 +2009,7 @@
                 },
                 "GlobalSecondaryIndexes": [
                     {
-                        "IndexName": "gsi-Subjects",
+                        "IndexName": "gsi-StudentSubjects",
                         "KeySchema": [
                             {
                                 "AttributeName": "subjectStudentId",
@@ -4664,7 +4690,7 @@
                 },
                 "DataSourceName": {
                     "Fn::GetAtt": [
-                        "StudentDataSource",
+                        "SchoolYearDataSource",
                         "Name"
                     ]
                 },

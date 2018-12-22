@@ -14,7 +14,7 @@ type SchoolYear {
 type Student {
   id: ID!
   name: String!
-  schoolYear: Student
+  schoolYear: SchoolYear
   subjects(filter: ModelSubjectFilterInput, sortDirection: ModelSortDirection, limit: Int, nextToken: String): ModelSubjectConnection
 }
 

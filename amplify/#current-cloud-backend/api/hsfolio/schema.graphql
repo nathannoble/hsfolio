@@ -3,7 +3,7 @@ type School @model
 {
   id: ID!
   name: String!
-  schoolYears: [SchoolYear] @connection(name: "SchoolYears")
+  schoolYears: [SchoolYear] @connection(name: "SchoolSchoolYears")
 }
 
 type SchoolYear @model 
@@ -11,8 +11,8 @@ type SchoolYear @model
 {
   id: ID!
   name: String!
-  school: School @connection(name: "SchoolYears"),
-  students: [Student] @connection(name: "Students")
+  school: School @connection(name: "SchoolSchoolYears"),
+  students: [Student] @connection(name: "SchoolYearStudents")
 }
 
 type Student @model 
@@ -20,8 +20,8 @@ type Student @model
 {
   id: ID!
   name: String!
-  schoolYear: Student @connection(name: "Students")
-  subjects: [Subject] @connection(name: "Subjects")
+  schoolYear: SchoolYear @connection(name: "SchoolYearStudents")
+  subjects: [Subject] @connection(name: "StudentSubjects")
 }
 
 type Subject @model 
@@ -30,7 +30,7 @@ type Subject @model
   id: ID!
   name: String!,
   level: String!,
-  student: Student @connection(name: "Subjects")
+  student: Student @connection(name: "StudentSubjects")
   tasks: [Task] @connection(name: "SubjectTasks")
   grade: Float
 }
@@ -46,7 +46,7 @@ type Task @model
   description: String
   status: String,
   subject: Subject @connection(name: "SubjectTasks")
-  taskWork: TaskWork @connection(name: "TaskWork")
+  taskWork: TaskWork @connection(name: "TaskTaskWork")
 }
 
 type TaskWork @model
@@ -58,7 +58,7 @@ type TaskWork @model
   )
 {
   id:ID!
-  task: Task @connection(name: "TaskWork")
+  task: Task @connection(name: "TaskTaskWork")
   comment: String,
   attachments: [String]
 }

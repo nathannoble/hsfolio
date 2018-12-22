@@ -2,12 +2,12 @@
     "AppSyncApiName": "hsfolio",
     "AuthCognitoUserPoolId": {
         "Fn::GetAtt": [
-            "authcognito43402749",
+            "authcognitod0b91f85",
             "Outputs.UserPoolId"
         ]
     },
-    "schemaGraphql": "s3://hsfolio-20181218130812-deployment/amplify-appsync-files/schema.graphql.1545186338258",
-    "ResolverBucket": "hsfolio-20181218130812-deployment",
+    "schemaGraphql": "s3://hsfolio-20181221175146-deployment/amplify-appsync-files/schema.graphql.1545433019100",
+    "ResolverBucket": "hsfolio-20181221175146-deployment",
     "ResolverRootKey": "amplify-appsync-files",
-    "DeploymentTimestamp": "1545186338258"
+    "DeploymentTimestamp": "1545433019100"
 }
