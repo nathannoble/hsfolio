@@ -69,7 +69,13 @@ class SchoolView extends Component {
         let result = await API.graphql(graphqlOperation(this.mutations.createSchoolYear, { "input": payload }));
         this.setState({ sy: "" });
         this.setState({ newSyDialog: false });
+        this.listSchools()
     }
+
+    async listSchools() {
+        let s =  await API.graphql(graphqlOperation(this.queries.getSchool, {id: this.props.school.currentSchool.id}));
+        this.props.onSetSchool(s.data.getSchool)
+      }
 
     render() {
         const { classes, school } = this.props;
@@ -110,7 +116,18 @@ class SchoolView extends Component {
                 
                 <FormDialog params={newSyParams}></FormDialog>
 
-                <div>{school.currentSchoolYear.name}</div>
+                {
+                    school.currentSchoolYear.name ?               
+                    <div>
+                        <div>School Year {school.currentSchoolYear.name}</div>
+                        <Button variant="outlined" color="primary" onClick={this.handleClickNewSyDialogOpen}>
+                            Enroll Student
+                        </Button>
+                    </div>
+                    : <div></div>
+                }
+
+                
             </div>
         )
     }
@@ -129,7 +146,9 @@ const mapStateToProps = state => {
 
 const mapDispatchToProps = dispatch => {
     return {
-        onSetSchoolYear: schoolYear => dispatch({ type: 'SET_SCHOOL_YEAR', schoolYear: schoolYear })
+        onSetSchoolYear: schoolYear => dispatch({ type: 'SET_SCHOOL_YEAR', schoolYear: schoolYear }),
+        onInitSchoolList: schoolList => dispatch({ type: 'INIT_SCHOOL_LIST', schoolList: schoolList }),
+        onSetSchool: school => dispatch({ type: 'SET_SCHOOL', school: school })
     };
 };
 

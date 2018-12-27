@@ -55,7 +55,6 @@ class Main extends Component {
   async componentDidMount() {
     const schools = await API.graphql(graphqlOperation(this.queries.listSchools));
     this.props.onInitSchoolList(schools.data.listSchools.items)
-    // this.setState({ schools: schools.data.listSchools.items });
   }
 
   handleClickOpen = () => {
