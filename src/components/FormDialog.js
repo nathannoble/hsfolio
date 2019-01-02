@@ -29,7 +29,6 @@ class FormDialog extends Component {
                         <TextField
                             autoFocus
                             margin="dense"
-                            id="name"
                             label={params.textLabel}
                             value={params.value}
                             onChange={params.onChange}

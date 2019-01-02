@@ -45,8 +45,10 @@ class SchoolView extends Component {
         this.props.onSetSchoolYear(sy)
     }
 
-    handleDelete(sy) {
-        this.props.onSetSchoolYear(sy)
+    async handleDelete(sy) {
+        const input = { "id": sy.id };
+        await API.graphql(graphqlOperation(this.mutations.deleteSchoolYear, { "input": input }));
+        this.listSchools();
     }
 
     handleClickNewSyDialogOpen = () => {
