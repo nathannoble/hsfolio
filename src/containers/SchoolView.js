@@ -12,6 +12,7 @@ import { withStyles } from '@material-ui/core/styles';
 import Avatar from '@material-ui/core/Avatar';
 import Chip from '@material-ui/core/Chip';
 import Button from '@material-ui/core/Button'
+import FaceIcon from '@material-ui/icons/Face';
 
 import FormDialog from '../components/FormDialog'
 
@@ -31,7 +32,8 @@ class SchoolView extends Component {
     constructor(props) {
         super(props)
         this.state = {
-            newSyDialog: false
+            newSyDialog: false,
+            enrollStudentDialog: false,
         }
 
         this.mutations = mutations
@@ -39,16 +41,27 @@ class SchoolView extends Component {
 
         this.handleChangeSy = this.handleChangeSy.bind(this);
         this.handleSubmitNewSy = this.handleSubmitNewSy.bind(this)
+
+        this.handleChangeStudent = this.handleChangeStudent.bind(this);
+        this.handleSubmitEnrollStudent = this.handleSubmitEnrollStudent.bind(this)
     }
 
     handleClick(sy) {
-        this.props.onSetSchoolYear(sy)
+        this.setSchoolYear(sy)
+    }
+
+    handleClickStudent(student) {
+        
+    }
+
+    async handleDeleteStudent(student) {
+        
     }
 
     async handleDelete(sy) {
         const input = { "id": sy.id };
         await API.graphql(graphqlOperation(this.mutations.deleteSchoolYear, { "input": input }));
-        this.listSchools();
+        this.refreshSchool();
     }
 
     handleClickNewSyDialogOpen = () => {
@@ -71,16 +84,48 @@ class SchoolView extends Component {
         let result = await API.graphql(graphqlOperation(this.mutations.createSchoolYear, { "input": payload }));
         this.setState({ sy: "" });
         this.setState({ newSyDialog: false });
-        this.listSchools()
+        this.refreshSchool()
     }
 
-    async listSchools() {
-        let s =  await API.graphql(graphqlOperation(this.queries.getSchool, {id: this.props.school.currentSchool.id}));
+    async refreshSchool() {
+        let s = await API.graphql(graphqlOperation(this.queries.getSchool, { id: this.props.school.currentSchool.id }));
         this.props.onSetSchool(s.data.getSchool)
-      }
+    }
+
+    /////////////////
+    // Enroll Student
+    /////////////
+    handleClickEnrollStudentDialogOpen = () => {
+        this.setState({ enrollStudentDialog: true, value: '' });
+    };
+
+    handleClickEnrollStudentDialogClose = () => {
+        this.setState({ enrollStudentDialog: false });
+    };
+
+    async handleSubmitEnrollStudent(event) {
+        let sy = this.props.school.currentSchoolYear
+        event.preventDefault();
+        event.stopPropagation();
+        let payload = { name: this.state.student, studentSchoolYearId: sy.id }
+        let result = await API.graphql(graphqlOperation(this.mutations.createStudent, { "input": payload }));
+        this.setState({ student: "" });
+        this.setState({ enrollStudentDialog: false });
+        this.setSchoolYear(sy)
+    }
+
+    handleChangeStudent(event) {
+        this.setState({ student: event.target.value });
+    }
+
+    async setSchoolYear(sy) {
+        let s = await API.graphql(graphqlOperation(this.queries.getSchoolYear, { id: sy.id }));
+        this.props.onSetSchoolYear(s.data.getSchoolYear)
+    }
 
     render() {
         const { classes, school } = this.props;
+
 
         const newSyParams = {
             title: "Add New School Year",
@@ -93,19 +138,45 @@ class SchoolView extends Component {
             onSubmit: this.handleSubmitNewSy
         }
 
-        let data = <div></div>
-        if(school.currentSchool.schoolYears){
-            data = [].concat(school.currentSchool.schoolYears.items)
-            .map((item, i) =>
-                <Chip key={i}
-                    avatar={<Avatar>SY</Avatar>}
-                    label={item.name}
-                    onClick={this.handleClick.bind(this, item)}
-                    onDelete={this.handleDelete.bind(this, item)}
-                    className={classes.chip}
-                    variant="outlined"
-                />
-            )
+        const enrollStudentParams = {
+            title: "Enroll a Student",
+            contentText: "Provide a name for this Student",
+            textLabel: "Name of the Student",
+            value: this.state.student,
+            onChange: this.handleChangeStudent,
+            open: this.state.enrollStudentDialog,
+            onClose: this.handleClickEnrollStudentDialogClose,
+            onSubmit: this.handleSubmitEnrollStudent
+        }
+
+        let schoolYears = <div></div>
+        if (school.currentSchool.schoolYears) {
+            schoolYears = [].concat(school.currentSchool.schoolYears.items)
+                .map((item, i) =>
+                    <Chip key={i}
+                        avatar={<Avatar>SY</Avatar>}
+                        label={item.name}
+                        onClick={this.handleClick.bind(this, item)}
+                        onDelete={this.handleDelete.bind(this, item)}
+                        className={classes.chip}
+                        variant="outlined"
+                    />
+                )
+        }
+
+        let students = <div></div>
+        if (school.currentSchoolYear.students) {
+            students = [].concat(school.currentSchoolYear.students.items)
+                .map((item, i) =>
+                    <Chip key={i}
+                    avatar={<Avatar><FaceIcon /></Avatar>}
+                        label={item.name}
+                        onClick={this.handleClickStudent.bind(this, item)}
+                        onDelete={this.handleDeleteStudent.bind(this, item)}
+                        className={classes.chip}
+                        variant="outlined"
+                    />
+                )
         }
 
         return (
@@ -114,22 +185,24 @@ class SchoolView extends Component {
                     New School Year
                 </Button>
 
-                <div>{data}</div>
-                
+                <div>{schoolYears}</div>
+
                 <FormDialog params={newSyParams}></FormDialog>
+                <FormDialog params={enrollStudentParams}></FormDialog>
 
                 {
-                    school.currentSchoolYear.name ?               
-                    <div>
-                        <div>School Year {school.currentSchoolYear.name}</div>
-                        <Button variant="outlined" color="primary" onClick={this.handleClickNewSyDialogOpen}>
-                            Enroll Student
+                    school.currentSchoolYear.name ?
+                        <div>
+                            <div>School Year {school.currentSchoolYear.name}</div>
+                            <Button variant="outlined" color="primary" onClick={this.handleClickEnrollStudentDialogOpen}>
+                                Enroll Student
                         </Button>
-                    </div>
-                    : <div></div>
+                        </div>
+                        : <div></div>
                 }
 
-                
+                <div>{students}</div>
+
             </div>
         )
     }
