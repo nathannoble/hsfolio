@@ -44,18 +44,31 @@ class SchoolView extends Component {
 
         this.handleChangeStudent = this.handleChangeStudent.bind(this);
         this.handleSubmitEnrollStudent = this.handleSubmitEnrollStudent.bind(this)
+        this.handleClickBackToSchool = this.handleClickBackToSchool.bind(this)
+        this.handleClickBackToSchoolYear = this.handleClickBackToSchoolYear.bind(this)
     }
 
     handleClick(sy) {
         this.setSchoolYear(sy)
     }
 
+    handleClickBackToSchool() {
+        this.props.onSetSchoolYear(null)
+    }
+
+    handleClickBackToSchoolYear() {
+        this.props.onSetStudent(null)
+    }
+
     handleClickStudent(student) {
-        
+        this.setStudent(student)
     }
 
     async handleDeleteStudent(student) {
-        
+        const input = { "id": student.id };
+        await API.graphql(graphqlOperation(this.mutations.deleteStudent, { "input": input }));
+        let sy = this.props.school.currentSchoolYear
+        this.setSchoolYear(sy)
     }
 
     async handleDelete(sy) {
@@ -123,6 +136,11 @@ class SchoolView extends Component {
         this.props.onSetSchoolYear(s.data.getSchoolYear)
     }
 
+    async setStudent(student) {
+        let s = await API.graphql(graphqlOperation(this.queries.getStudent, { id: student.id }));
+        this.props.onSetStudent(s.data.getStudent)
+    }
+
     render() {
         const { classes, school } = this.props;
 
@@ -165,11 +183,11 @@ class SchoolView extends Component {
         }
 
         let students = <div></div>
-        if (school.currentSchoolYear.students) {
+        if (school.currentSchoolYear && school.currentSchoolYear.students) {
             students = [].concat(school.currentSchoolYear.students.items)
                 .map((item, i) =>
                     <Chip key={i}
-                    avatar={<Avatar><FaceIcon /></Avatar>}
+                        avatar={<Avatar><FaceIcon /></Avatar>}
                         label={item.name}
                         onClick={this.handleClickStudent.bind(this, item)}
                         onDelete={this.handleDeleteStudent.bind(this, item)}
@@ -179,29 +197,47 @@ class SchoolView extends Component {
                 )
         }
 
+        let studentText = ''
+        if (school.currentStudent) {
+            studentText = ' > ' + school.currentStudent.name
+        }
+
         return (
             <div className={classes.root}>
-                <Button variant="outlined" color="primary" onClick={this.handleClickNewSyDialogOpen}>
-                    New School Year
-                </Button>
 
-                <div>{schoolYears}</div>
+                {
+                    school.currentSchoolYear && school.currentSchoolYear.name ?
+                        <div>
+                            
+                            <div>School Year {school.currentSchoolYear.name} {studentText}</div>
+
+                            {school.currentStudent ?
+                                <Button variant="outlined" onClick={this.handleClickBackToSchoolYear}>
+                                    Back
+                                </Button>
+                                :
+                                <div>
+                                    <Button variant="outlined" onClick={this.handleClickBackToSchool}>
+                                        Back
+                                    </Button>
+                                    <div>{students}</div>
+                                    <Button variant="outlined" color="primary" onClick={this.handleClickEnrollStudentDialogOpen}>
+                                        Enroll Student
+                                    </Button>
+                                </div>
+                            }
+
+                        </div>
+                        : <div>
+                            <div>{schoolYears}</div>
+                            <Button variant="outlined" color="primary" onClick={this.handleClickNewSyDialogOpen}>
+                                New School Year
+                            </Button>
+                        </div>
+                }
 
                 <FormDialog params={newSyParams}></FormDialog>
                 <FormDialog params={enrollStudentParams}></FormDialog>
-
-                {
-                    school.currentSchoolYear.name ?
-                        <div>
-                            <div>School Year {school.currentSchoolYear.name}</div>
-                            <Button variant="outlined" color="primary" onClick={this.handleClickEnrollStudentDialogOpen}>
-                                Enroll Student
-                        </Button>
-                        </div>
-                        : <div></div>
-                }
-
-                <div>{students}</div>
 
             </div>
         )
@@ -223,7 +259,8 @@ const mapDispatchToProps = dispatch => {
     return {
         onSetSchoolYear: schoolYear => dispatch({ type: 'SET_SCHOOL_YEAR', schoolYear: schoolYear }),
         onInitSchoolList: schoolList => dispatch({ type: 'INIT_SCHOOL_LIST', schoolList: schoolList }),
-        onSetSchool: school => dispatch({ type: 'SET_SCHOOL', school: school })
+        onSetSchool: school => dispatch({ type: 'SET_SCHOOL', school: school }),
+        onSetStudent: student => dispatch({ type: 'SET_STUDENT', student: student })
     };
 };
 
